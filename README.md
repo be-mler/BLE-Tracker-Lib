@@ -1,7 +1,7 @@
 # BLE Tracker Lib
 ## Intro
 The BLE Tracker Lib is an android app library to easyly track Bluetooth Low Energy (BLE) Beacons. Track in this case means if there is a beacon nearby this lib recognizes it, adds a GPS location to it and sends it to a rest endpoint.
-We also provide an [App](todo)  using this lib.
+We also provide an [App]()  using this lib.
 
 ## Motivation
 We are two cybersecurity students from [CISPA](https://cispa.saarland/). Our motivation is to get a view where and how much BLE trackers used for benign reasons and or tracking you. We want to provide you the ability to include this in your app and help tracking beacons or to 
@@ -19,8 +19,9 @@ We are two cybersecurity students from [CISPA](https://cispa.saarland/). Our mot
 - RuuviTags
 ## Usage
 ### Requirements
+- At least API level 21 (Andorid 5.0).
 - At the moment we only support **AndroidX** based projects. If your project is not migrated yet take a look at [how to migrate to AndroidX](https://developer.android.com/jetpack/androidx/migrate). 
-- At least API level 21.
+
 
 ### Include+Basic
 #### 1. Into your gradle
@@ -38,7 +39,7 @@ Step 2. Add the dependancy:
 ```gradle
 	dependencies {
 		...
-		implementation 'com.github.User:Repo:Tag'
+		implementation 'implementation 'com.github.be-mler:BLE-Tracker-Lib:v1.x'
 	}
 ```
 #### 2. Into your project
@@ -130,7 +131,32 @@ bleTracker.addServiceNotifier(new ServiceNotifier() {
 });
 ```
 #### Remote Connections (REST connections)
-You can add your rest connections and specify their sending behaviour via per connection **RemoteSettings**.
+***Important! You need a corresponding endpoint to use this feature!*** Take a look at [RemoteConnection.java](https://github.com/be-mler/BLE-Tracker-Lib/blob/master/bletrackerlib/src/main/java/saarland/cispa/bletrackerlib/remote/RemoteConnection.java), [RemoteBeaconObject.java](https://github.com/be-mler/BLE-Tracker-Lib/blob/master/bletrackerlib/src/main/java/saarland/cispa/bletrackerlib/remote/RemoteBeaconObject.java) and at  [our endpoint implementation](todo) 
+
+**Remote connections have two independant features:**
+- Send beacons
+- Receive beacons
+You can add your rest connections and specify their sending behaviour via per connection **RemotePreferences**.
+Sending is always called if there were beacons found but it depends if it sends or not on your preferences.
+```java
+RemotePreferences remotePreferences = new RemotePreferences();
+remotePreferences.setSendMode(SendMode.DO_SEND_BEACONS);	// Send beacons even without GPS
+remotePreferences.setSendInterval(10000);					// Send if the same beacon is still near every 10s
+String url = "http://fancy-url.de";
+RemoteConnection remoteConnection = new RemoteConnection(url, this, remotePreferences);
+// You also can receive from your REST connection 
+remoteConnection.addRemoteReceiver(new RemoteRequestReceiver() {
+	@Override
+	public void onBeaconsReceived(ArrayList<SimpleBeacon> beacons) {
+		//TODO: Show the beacons on a map or list
+	}
+	@Override
+	public void onBeaconReceiveError(String errorMessage) {
+		//TODO: Display a toast message that receiving was not successful (no internet connection?)
+	}
+});
+bleTracker.addRemoteConnection(remoteConnection);
+```
 
 #### CISPA Connection
 The CISPA connection is also a REST connection used by default. You can send/receive beacons to/from our endpoint. 
@@ -140,9 +166,9 @@ It will **NOT send** if you use a **background scanner** or change this **BleTra
 - location freshness > 10s
 This is enforced beacuse we want to have a accurate dataset.
 
-You can also take a look at our example project [example project](todo) or at [our app](todo).
+You can also take a look at our example project [example project](https://github.com/be-mler/BLE-Tracker-Lib/tree/master/exampleapp) or at [our app](todo).
 
-##Libraries
+## Libraries
 **We use the following libraries:**
 - **AltBeacon** for parsing beacons
 - **Volley** for REST connection
@@ -150,3 +176,17 @@ You can also take a look at our example project [example project](todo) or at [o
 - **AppCompact Androidx** for dialogs etc.
 
 ## License
+	Copyright 2019 Max Bäumler, Tobias Faber
+	Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+This software is available under the Apache License 2.0

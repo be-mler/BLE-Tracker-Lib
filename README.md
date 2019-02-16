@@ -1,30 +1,30 @@
-# BLE Tracker Lib
-## Intro
+# Beacon Tracker Lib #
+## Intro ##
 The BLE Tracker Lib is an android app library to easyly track Bluetooth Low Energy (BLE) Beacons. Track in this case means if there is a beacon nearby this lib recognizes it, adds a GPS location to it and sends it to a rest endpoint.
-We also provide an [App]()  using this lib.
+We also provide an [App](https://github.com/be-mler/Beacon-Tracker-App)  using this lib.
 
-## Motivation
+## Motivation ##
 We are two cybersecurity students from [CISPA](https://cispa.saarland/). Our motivation is to get a view where and how much BLE trackers used for benign reasons and or tracking you. We want to provide you the ability to include this in your app and help tracking beacons or to 
-## Features 
-#### General:
+## Features ##
+#### General: ####
 - Backgound Tracking (Low power consumption but less accurate)
 - Forground Tracking (Higher power consumption but very accurate)
 - Send/receive to/from one ore more REST endpoints
 - Send/receive to/from CISPA REST endpoint
-#### Supported beacons: 
+#### Supported beacons: ####
 - iBeacons 
 - AltBeacons
 - Eddystone URL 
 - Eddystone UID
 - RuuviTags
-## Usage
-### Requirements
+## Usage ##
+### Requirements ###
 - At least API level 21 (Andorid 5.0).
 - At the moment we only support **AndroidX** based projects. If your project is not migrated yet take a look at [how to migrate to AndroidX](https://developer.android.com/jetpack/androidx/migrate). 
 
 
-### Include+Basic
-#### 1. Into your gradle
+### Include & Basic ###
+#### 1. Into your gradle ####
 
 Step 1. Add the jitpack repository to yourroot build.gradle at the end of repositories:
 ```gradle
@@ -39,10 +39,10 @@ Step 2. Add the dependancy:
 ```gradle
 	dependencies {
 		...
-		implementation 'implementation 'com.github.be-mler:BLE-Tracker-Lib:v1.x'
+		implementation 'implementation 'com.github.be-mler:Beacon-Tracker-Lib:v1.x'
 	}
 ```
-#### 2. Into your project
+#### 2. Into your project ####
 
 Step 1. Change the application context in your AndroidManifest.xml to **BleTrackerService**
 ```xml
@@ -107,8 +107,8 @@ protected void onResume() {
 }
 ```
 
-### Advanced Usage
-#### Preferences
+### Advanced Usage ###
+#### Preferences ####
 You can specify the following preferences for the tracker.
 This has to be done at initializing the lib by changing the values in **BleTrackerPreferences**.
 **We provide you the following settings**:
@@ -116,7 +116,7 @@ This has to be done at initializing the lib by changing the values in **BleTrack
 - location freshness (how old has the last location data has to be that location coordinates are added to the beacons)
 - send to CISPA (do you want that your scanned beacons are sent to us?)
 - scan interval (the interval in which the scanner looks for beacons the higher you set it the lower energy will cost but the less updates you get)
-#### Service notifiers
+#### Service notifiers ####
 **ServiceNotifier**s are callbacks you can add after you got an instance of **BleTracker**. This get fired if you start or stop a service and may help you to change thins at certain differnet points in your app depending on if scanning or not.
 ```java
 bleTracker.addServiceNotifier(new ServiceNotifier() {
@@ -130,7 +130,7 @@ bleTracker.addServiceNotifier(new ServiceNotifier() {
 	}
 });
 ```
-#### Remote Connections (REST connections)
+#### Remote Connections (REST connections) ####
 ***Important! You need a corresponding endpoint to use this feature!*** Take a look at [RemoteConnection.java](https://github.com/be-mler/BLE-Tracker-Lib/blob/master/bletrackerlib/src/main/java/saarland/cispa/bletrackerlib/remote/RemoteConnection.java), [RemoteBeaconObject.java](https://github.com/be-mler/BLE-Tracker-Lib/blob/master/bletrackerlib/src/main/java/saarland/cispa/bletrackerlib/remote/RemoteBeaconObject.java) and at  [our endpoint implementation](todo) 
 
 **Remote connections have two independant features:**
@@ -158,7 +158,7 @@ remoteConnection.addRemoteReceiver(new RemoteRequestReceiver() {
 bleTracker.addRemoteConnection(remoteConnection);
 ```
 
-#### CISPA Connection
+#### CISPA Connection ####
 The CISPA connection is also a REST connection used by default. You can send/receive beacons to/from our endpoint. 
 This connection is is activated by default but can be deactivated via **BleTrackerPreferences**.
 It will **NOT send** if you use a **background scanner** or change this **BleTrackerPreferences** to values:
@@ -168,14 +168,29 @@ This is enforced beacuse we want to have a accurate dataset.
 
 You can also take a look at our example project [example project](https://github.com/be-mler/BLE-Tracker-Lib/tree/master/exampleapp) or at [our app](todo).
 
-## Libraries
+## How it works ##
+The main entry point is **BleTracker** from this point you can control the **BleTrackerService** (e.g. create, start, stop the service). You can see it as an wrapper class for the **BleTrackerService**. At this point is possible to register listeners for getting the found beacons, getting notified if a beacon is near and getting status information of the service. Also it is possible to add new **RemoteConnection**s pointing to your specified REST endpoint.
+The **BleTrackerService** is the heart of the Lib here the AltBeacon scanner service is created and invoked. This class has to be the application context yor app and must be specified in the android manifest. There the callback is fired if a beacaon is near. For getting the beacon information a **RangeNorifierImpl** gets created for both, the background scanner and the foreground scanner in the specific methods *createBackgroundService()* and *createForgroundService()*. 
+
+The **RangeNotifierImpl** then does the following: It receives and parses the beacon information and fires the *onUpdate()* callback with the parsed beacons (**SimpleBeacons**). Furthermore it starts sending all beacons to all registered endpoints.
+
+Parsing the beacons is done in the **SimpeBeaconParser**. There the AltBeacon information is parsed accordingly into the specific beacon formats and stored as an **SimpleBeacon**. If location is turned on and matches the accuracy and freshness specified in the **BleTrackerPreferences** location information is added to the **SimpleBeacon**. 
+
+The sending and receiving of the beacons is done by the **RemoteConnection**.
+For each remote connection it is possible to you to add spcific **RemotePreferences**. They can be used to specify in which interval you want to send a already sent beacon or to decide if beacons get sent, get not sent or get only sent if they have location coordinates. 
+Sending as said before gets fired in the **RangeNotifierImpl**. For now we do not provide callbacks if sending was successfull or has failed.
+Receiving beacons can be done by you by either use the *cispaConnection* or one of your custom **RemoteReceive**s. Just call *requestBeacons()* and specify a area in which you are interested in.
+
+For more details take a look at our [Java Doc](https://be-mler.github.io/Beacon-Tracker-Lib/) 
+
+## Libraries ##
 **We use the following libraries:**
 - **AltBeacon** for parsing beacons
 - **Volley** for REST connection
 - **GSON** for rest data parsing
 - **AppCompact Androidx** for dialogs etc.
 
-## License
+## License ##
 	Copyright 2019 Max Bäumler, Tobias Faber
 	Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.

@@ -170,6 +170,7 @@ You can also take a look at our example project [example project](https://github
 
 ## How it works ##
 The main entry point is **BleTracker** from this point you can control the **BleTrackerService** (e.g. create, start, stop the service). You can see it as an wrapper class for the **BleTrackerService**. At this point is possible to register listeners for getting the found beacons, getting notified if a beacon is near and getting status information of the service. Also it is possible to add new **RemoteConnection**s pointing to your specified REST endpoint.
+
 The **BleTrackerService** is the heart of the Lib here the AltBeacon scanner service is created and invoked. This class has to be the application context yor app and must be specified in the android manifest. There the callback is fired if a beacaon is near. For getting the beacon information a **RangeNorifierImpl** gets created for both, the background scanner and the foreground scanner in the specific methods *createBackgroundService()* and *createForgroundService()*. 
 
 The **RangeNotifierImpl** then does the following: It receives and parses the beacon information and fires the *onUpdate()* callback with the parsed beacons (**SimpleBeacons**). Furthermore it starts sending all beacons to all registered endpoints.

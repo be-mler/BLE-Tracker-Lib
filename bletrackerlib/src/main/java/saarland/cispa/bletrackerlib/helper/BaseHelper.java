@@ -1,6 +1,7 @@
 package saarland.cispa.bletrackerlib.helper;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 
 import androidx.appcompat.app.AlertDialog;
 import saarland.cispa.bletrackerlib.R;
@@ -15,7 +16,11 @@ public class BaseHelper {
     public static void showAppFunctionalityLimitedWithout(Activity activity, int message) {
         AlertDialog.Builder dialog = new AlertDialog.Builder(activity);
         dialog.setMessage(message);
-        dialog.setNeutralButton(R.string.ok, (dialog1, which) -> {});
+        dialog.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog1, int which) {
+            }
+        });
         dialog.show();
     }
 }

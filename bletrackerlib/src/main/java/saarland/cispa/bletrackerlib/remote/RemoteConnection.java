@@ -5,6 +5,8 @@ import android.util.Log;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
@@ -79,19 +81,25 @@ public class RemoteConnection {
         String apiUrl = String.format(Locale.ENGLISH,"%s/%d/%f/%f/%f/%f", url, remotePreferences.getMinConfirmations(), longS, longE, latS, latE);
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, apiUrl,
-                response -> {
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
 
-                    RemoteBeaconObject[] rcvBeacons = new Gson().fromJson(response, RemoteBeaconObject[].class);
-                    ArrayList<SimpleBeacon> simpleBeacons = new ArrayList<>();
-                    for (RemoteBeaconObject rmt: rcvBeacons) {
-                        simpleBeacons.add(rmt.GetSimpleBeacon());
+                        RemoteBeaconObject[] rcvBeacons = new Gson().fromJson(response, RemoteBeaconObject[].class);
+                        ArrayList<SimpleBeacon> simpleBeacons = new ArrayList<>();
+                        for (RemoteBeaconObject rmt : rcvBeacons) {
+                            simpleBeacons.add(rmt.GetSimpleBeacon());
+                        }
+                        for (RemoteRequestReceiver receiver : receivers) {
+                            receiver.onBeaconsReceived(simpleBeacons);
+                        }
                     }
-                    for (RemoteRequestReceiver receiver : receivers) {
-                        receiver.onBeaconsReceived(simpleBeacons);
-                    }
-                }, error -> {
-            for (RemoteRequestReceiver receiver : receivers) {
-                receiver.onBeaconReceiveError(error.getMessage());
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                for (RemoteRequestReceiver receiver : receivers) {
+                    receiver.onBeaconReceiveError(error.getMessage());
+                }
             }
         });
 
@@ -108,12 +116,18 @@ public class RemoteConnection {
             e.printStackTrace();
         }
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST,url,beaconAsJson,
-                response -> {
-                    //TODO: Give user feedback of successfull submission?
-                    Log.d(TAG,"send successful");
-                }, error -> {
-            // TODO: Handle error
-            Log.d(TAG,"send error: "+error.getMessage());
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        //TODO: Give user feedback of successfull submission?
+                        Log.d(TAG, "send successful");
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                // TODO: Handle error
+                Log.d(TAG, "send error: " + error.getMessage());
+            }
         });
         queue.add(jsonObjectRequest);
     }

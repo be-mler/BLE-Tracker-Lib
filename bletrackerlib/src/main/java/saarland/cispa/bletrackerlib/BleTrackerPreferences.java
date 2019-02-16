@@ -77,7 +77,7 @@ public class BleTrackerPreferences {
 
     /**
      * get the time in which a location is seen as fresh
-     * default is 30,000ms (30s)
+     * default is 10,000ms (10s)
      * @return the time in ms
      */
     public int getLocationFreshness() {
@@ -86,7 +86,7 @@ public class BleTrackerPreferences {
 
     /**
      * set the time in which a location is seen as fresh
-     * default is 30,000ms (30s)
+     * default is 10,000ms (30s)
      * @param locationFreshness in ms
      */
     public void setLocationFreshness(int locationFreshness) {

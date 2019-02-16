@@ -2,6 +2,7 @@ package saarland.cispa.bletrackerlib.helper;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
+import android.content.DialogInterface;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -14,22 +15,31 @@ public class BluetoothHelper extends BaseHelper {
      * Open a dialog and explain the user to turn on Bluetooth
      * @param activity is needed for showing the message
      */
-    public static void showDialogIfBluetoothIsOff(Activity activity) {
+    public static void showDialogIfBluetoothIsOff(final Activity activity) {
         final BluetoothAdapter ba = BluetoothAdapter.getDefaultAdapter();
-        AtomicBoolean positiveClicked = new AtomicBoolean(false);
+        final AtomicBoolean positiveClicked = new AtomicBoolean(false);
         if (ba != null) {
             if (!isBluetoothOn()) {
                 AlertDialog.Builder dialog = new AlertDialog.Builder(activity);
                 dialog.setMessage(R.string.bluetooth_not_enabled);
-                dialog.setPositiveButton(R.string.enable, (dialog1, which) ->{
-                    positiveClicked.set(true);
-                    ba.enable();
+                dialog.setPositiveButton(R.string.enable, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog1, int which) {
+                        positiveClicked.set(true);
+                        ba.enable();
+                    }
                 });
-                dialog.setNegativeButton(activity.getString(R.string.cancel), (dialog12, which) -> {});
-                dialog.setOnDismissListener(dialog1 ->
-                {
-                    if (!positiveClicked.get()) {
-                        showAppFunctionalityLimitedWithout(activity, R.string.functionality_limited_bluetooth);
+                dialog.setNegativeButton(activity.getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog12, int which) {
+                    }
+                });
+                dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog1) {
+                        if (!positiveClicked.get()) {
+                            showAppFunctionalityLimitedWithout(activity, R.string.functionality_limited_bluetooth);
+                        }
                     }
                 });
                 dialog.show();

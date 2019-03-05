@@ -7,6 +7,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
@@ -15,12 +16,16 @@ import com.google.gson.Gson;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManagerFactory;
 
 import saarland.cispa.bletrackerlib.data.SimpleBeacon;
 import saarland.cispa.bletrackerlib.parser.DateParser;
@@ -46,7 +51,35 @@ public class RemoteConnection {
     public RemoteConnection(String url, Context context, RemotePreferences remotePreferences) {
         this.url = url;
         this.remotePreferences = remotePreferences;
-        queue = Volley.newRequestQueue(context);
+
+        queue = Volley.newRequestQueue(context,getPinnedSocketFactory());
+    }
+
+
+    /**
+     * Returns the SSLSocketFactory if a keystore has been provided or null for default
+     * @return
+     */
+    private HurlStack getPinnedSocketFactory() {
+
+        if(remotePreferences.getKeyStore() == null)
+            return null;
+        // Create a TrustManager that trusts the CAs in our KeyStore
+        String tmfAlgorithm = TrustManagerFactory.getDefaultAlgorithm();
+        TrustManagerFactory tmf = null;
+        try {
+            tmf = TrustManagerFactory.getInstance(tmfAlgorithm);
+            tmf.init(remotePreferences.getKeyStore());
+            // Create an SSLContext that uses our TrustManager
+            SSLContext sslcontext = SSLContext.getInstance("TLS");
+            sslcontext.init(null, tmf.getTrustManagers(), null);
+            return new HurlStack(null, sslcontext.getSocketFactory());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+
+
     }
 
     /**

@@ -2,7 +2,14 @@ package saarland.cispa.bletrackerlib;
 
 import android.app.Activity;
 import android.app.Notification;
+import android.util.Log;
 
+import java.io.ByteArrayInputStream;
+
+import java.security.KeyStore;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 
 import saarland.cispa.bletrackerlib.helper.BluetoothHelper;
@@ -53,7 +60,63 @@ public class BleTracker {
 
     private void initCispaConnection() {
         RemotePreferences remotePreferences = new RemotePreferences();
+
         if (preferences.isSendToCispa()) {
+            try {
+
+            CertificateFactory cf = CertificateFactory.getInstance("X.509");
+            //hardcode cispa ble Certificate
+                String certString = "" +
+                        "MIIFVTCCBD2gAwIBAgISA4owe+ncywdG7M7k6AfaIhvyMA0GCSqGSIb3DQEBCwUA" +
+                        "MEoxCzAJBgNVBAYTAlVTMRYwFAYDVQQKEw1MZXQncyBFbmNyeXB0MSMwIQYDVQQD" +
+                        "ExpMZXQncyBFbmNyeXB0IEF1dGhvcml0eSBYMzAeFw0xOTAyMTEwNTE3MjVaFw0x" +
+                        "OTA1MTIwNTE3MjVaMBoxGDAWBgNVBAMTD2JsZS5mYWJlci5yb2NrczCCASIwDQYJ" +
+                        "KoZIhvcNAQEBBQADggEPADCCAQoCggEBAMpGk4OCl51+v8fEgR5SHzO8Eqv1Kd4k" +
+                        "jn7+bAYSpsmTMI03N3yAxx9VuYbkAtJgVe66t15tIMoZ/LtPw8W3GZ4ZlfeBsvJg" +
+                        "s7BUYw77IMNm+NHbF4lmYNmavRCaH7gAv1Cls4tXQXmNtcEBc6NYjeZtlCNjOOvm" +
+                        "uehhzHo0aGSYW0ouw1JfGXqgdACEt/nsrKnN9KRHljc/aLpsh//XdwA/kn8/WGoV" +
+                        "FcKEoIOPA8wAAe6wdTRfg266r1qGZhF4mSkXEgW9F3DAw0XDeNJrWems9BjYcB8O" +
+                        "Ohh1AmZ6eqbaOI7p2fU/3df3OX52i+V2/LaDH26n6X7k5QgAxrx6zS0CAwEAAaOC" +
+                        "AmMwggJfMA4GA1UdDwEB/wQEAwIFoDAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYB" +
+                        "BQUHAwIwDAYDVR0TAQH/BAIwADAdBgNVHQ4EFgQUN0Mnyb8fMreW8BYwrdBCbdQ0" +
+                        "+s8wHwYDVR0jBBgwFoAUqEpqYwR93brm0Tm3pkVl7/Oo7KEwbwYIKwYBBQUHAQEE" +
+                        "YzBhMC4GCCsGAQUFBzABhiJodHRwOi8vb2NzcC5pbnQteDMubGV0c2VuY3J5cHQu" +
+                        "b3JnMC8GCCsGAQUFBzAChiNodHRwOi8vY2VydC5pbnQteDMubGV0c2VuY3J5cHQu" +
+                        "b3JnLzAaBgNVHREEEzARgg9ibGUuZmFiZXIucm9ja3MwTAYDVR0gBEUwQzAIBgZn" +
+                        "gQwBAgEwNwYLKwYBBAGC3xMBAQEwKDAmBggrBgEFBQcCARYaaHR0cDovL2Nwcy5s" +
+                        "ZXRzZW5jcnlwdC5vcmcwggEDBgorBgEEAdZ5AgQCBIH0BIHxAO8AdQB0ftqDMa0z" +
+                        "EJEhnM4lT0Jwwr/9XkIgCMY3NXnmEHvMVgAAAWjbNALsAAAEAwBGMEQCIBZF9Tzx" +
+                        "TpiwO6FwhPSfu5uPu3AKZRbdLs7hoTSQyV83AiA17to8U/Tef5rNp0kPrRiPXTbK" +
+                        "0IKaRPfJPj16nIby3gB2ACk8UZZUyDlluqpQ/FgH1Ldvv1h6KXLcpMMM9OVFR/R4" +
+                        "AAABaNs0AwEAAAQDAEcwRQIgI/uL2CnItXYhhNsjEZKNM0wAg5+mPp7hRADCIidI" +
+                        "EFECIQD9YcgcB31MxLs1IUhCMp54Cf58BrPv0UXktx3b6t8BQTANBgkqhkiG9w0B" +
+                        "AQsFAAOCAQEAE5532KnY74O49GAOWTld248KIaQ2aTHVOfkck2kLj/i9b/C6WTJB" +
+                        "Ot1f06AFt9Bdy0uOpUI9PAazeIMw3cPFtp6mwGI1Rcd++tJeFf+b8fEOAkJxqQer" +
+                        "9frHIe5K53Qyc9MkUrVJy51ClS5665F/n50znhV1A0KmJxGwiSYZfWcejf5ABFLH" +
+                        "2pKPyiq5rUKrtiqMeKMTVCM2ACWLrdz821IQn136+mSG6CMDTFyuBMNBCK8kaUTF" +
+                        "ETiCZ7G05IrX5n3apaDSG2F3w2ctEsScEhd3SJsouDB9V7m/X33K0R3SjfsoFJ0H" +
+                        "3pFRgv9hP9QOJXRUrqAV0u4Nc6LS+ARnFw==";
+                byte[] certBytes = android.util.Base64.decode(certString, android.util.Base64.DEFAULT);
+
+                Certificate ca = cf.generateCertificate(new ByteArrayInputStream(certBytes));
+                System.out.println("ca=" + ((X509Certificate) ca).getSubjectDN());
+
+                // Create a KeyStore containing our trusted CAs
+                String keyStoreType = KeyStore.getDefaultType();
+                KeyStore keyStore = KeyStore.getInstance(keyStoreType);
+                keyStore.load(null, null);
+                keyStore.setCertificateEntry("ca", ca);
+                Log.d("CERTX", "Loaded ");
+            }catch (Exception e){
+                Log.d("CERTX", "Failed ");
+                e.printStackTrace();
+            }
+
+
+
+
+
+
             remotePreferences.setSendMode(SendMode.DO_ONLY_SEND_IF_BEACONS_HAVE_GPS);
         } else {
             remotePreferences.setSendMode(SendMode.DO_NOT_SEND_BEACONS);

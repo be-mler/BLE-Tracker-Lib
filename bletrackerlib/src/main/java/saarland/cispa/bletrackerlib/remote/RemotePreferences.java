@@ -1,10 +1,13 @@
 package saarland.cispa.bletrackerlib.remote;
 
+import java.security.KeyStore;
+
 public class RemotePreferences {
 
     private SendMode sendMode = SendMode.DO_ONLY_SEND_IF_BEACONS_HAVE_GPS;
     private int sendInterval = 15 * 1000;
     private int minConfirmations = 1;
+    private KeyStore keyStore = null;
 
     /**
      * get the send mode
@@ -58,5 +61,22 @@ public class RemotePreferences {
      */
     public void setMinConfirmations(int minConfirmations) {
         this.minConfirmations = minConfirmations;
+    }
+
+    /**
+     * get the Keystore that contains the certificates
+     * @return keystore
+     */
+    public KeyStore getKeyStore() {
+        return keyStore;
+    }
+
+    /**
+     * Set the keystore for this connection.
+     * default null
+     * @param keyStore
+     */
+    public void setKeyStore(KeyStore keyStore) {
+        this.keyStore = keyStore;
     }
 }

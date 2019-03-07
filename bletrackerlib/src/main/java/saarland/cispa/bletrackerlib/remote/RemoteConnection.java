@@ -57,8 +57,8 @@ public class RemoteConnection {
 
 
     /**
-     * Returns the SSLSocketFactory if a keystore has been provided or null for default
-     * @return
+     * Returns the HurlStack if a keystore has been provided or null for default
+     * @return a HurlStack
      */
     private HurlStack getPinnedSocketFactory() {
 
@@ -78,8 +78,6 @@ public class RemoteConnection {
             e.printStackTrace();
             return null;
         }
-
-
     }
 
     /**

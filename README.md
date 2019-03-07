@@ -4,7 +4,7 @@ The BLE Tracker Lib is an android app library to easyly track Bluetooth Low Ener
 We also provide an [App](https://github.com/be-mler/Beacon-Tracker-App)  using this lib.
 
 ## Motivation ##
-We are two cybersecurity students from [CISPA](https://cispa.saarland/). Our motivation is to get a view where and how much BLE trackers used for benign reasons and or tracking you. We want to provide you the ability to include this in your app and help tracking beacons or to 
+We are two cybersecurity students from [CISPA](https://cispa.saarland/). Our motivation is to get a view where and how much BLE trackers used for benign reasons and or tracking you. We want to provide you the ability to include this in your app and help tracking beacons or to track beacons yourself.
 ## Features ##
 #### General: ####
 - Backgound Tracking (Low power consumption but less accurate)
@@ -166,12 +166,12 @@ It will **NOT send** if you use a **background scanner** or change this **BleTra
 - location freshness > 10s
 This is enforced beacuse we want to have a accurate dataset.
 
-You can also take a look at our example project [example project](https://github.com/be-mler/BLE-Tracker-Lib/tree/master/exampleapp) or at [our app](todo).
+You can also take a look at our example project [example project](https://github.com/be-mler/BLE-Tracker-Lib/tree/master/exampleapp) or at [our App](https://github.com/be-mler/Beacon-Tracker-App).
 
 ## How it works ##
 The main entry point is **BleTracker** from this point you can control the **BleTrackerService** (e.g. create, start, stop the service). You can see it as an wrapper class for the **BleTrackerService**. At this point is possible to register listeners for getting the found beacons, getting notified if a beacon is near and getting status information of the service. Also it is possible to add new **RemoteConnection**s pointing to your specified REST endpoint.
 
-The **BleTrackerService** is the heart of the Lib here the AltBeacon scanner service is created and invoked. This class has to be the application context yor app and must be specified in the android manifest. There the callback is fired if a beacaon is near. For getting the beacon information a **RangeNorifierImpl** gets created for both, the background scanner and the foreground scanner in the specific methods *createBackgroundService()* and *createForgroundService()*. 
+The **BleTrackerService** is the heart of the Lib here the AltBeacon scanner service is created and invoked. This class has to be the application context yor app and must be specified in the android manifest. There the callback is fired if a beacon is near. For getting the beacon information a **RangeNorifierImpl** gets created for both, the background scanner and the foreground scanner in the specific methods *createBackgroundService()* and *createForgroundService()*. 
 
 The **RangeNotifierImpl** then does the following: It receives and parses the beacon information and fires the *onUpdate()* callback with the parsed beacons (**SimpleBeacons**). Furthermore it starts sending all beacons to all registered endpoints.
 
@@ -190,6 +190,9 @@ For more details take a look at our [Java Doc](https://be-mler.github.io/Beacon-
 - **Volley** for REST connection
 - **GSON** for rest data parsing
 - **AppCompact Androidx** for dialogs etc.
+
+## Credits ##
+- [Android Beacon Scanner](https://github.com/Bridouille/android-beacon-scanner) form where we have adopted the RuuviTag Parser.
 
 ## License ##
 	Copyright 2019 Max Bäumler, Tobias Faber

@@ -1,5 +1,9 @@
 package saarland.cispa.bletrackerlib.data;
 
+/**
+ * This class holds all the parsed or received information of a beacon.
+ */
+
 public class SimpleBeacon {
 
     public static class Location {

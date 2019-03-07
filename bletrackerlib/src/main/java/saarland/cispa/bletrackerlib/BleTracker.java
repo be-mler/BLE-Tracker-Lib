@@ -2,10 +2,7 @@ package saarland.cispa.bletrackerlib;
 
 import android.app.Activity;
 import android.app.Notification;
-import android.content.Context;
 import android.util.Log;
-
-import java.io.ByteArrayInputStream;
 
 import java.io.InputStream;
 import java.security.KeyStore;
@@ -14,14 +11,23 @@ import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 
+import saarland.cispa.bletrackerlib.exceptions.BleOtherServiceStillRunningException;
 import saarland.cispa.bletrackerlib.helper.BluetoothHelper;
 import saarland.cispa.bletrackerlib.helper.LocationHelper;
-import saarland.cispa.bletrackerlib.exceptions.OtherServiceStillRunningException;
 import saarland.cispa.bletrackerlib.remote.RemoteConnection;
 import saarland.cispa.bletrackerlib.remote.RemotePreferences;
 import saarland.cispa.bletrackerlib.remote.SendMode;
 import saarland.cispa.bletrackerlib.service.BleTrackerService;
 import saarland.cispa.bletrackerlib.service.BeaconNotifier;
+
+/**
+ * This is the main entry point for interacting with the lib.
+ * Here you can control the {@link BleTrackerService} (e.g. create, start, stop the service).
+ * You can see it as an wrapper class for the BleTrackerService.
+ * At this point is possible to register listeners for getting the found beacons,
+ * getting notified if a beacon is near and getting status information of the service.
+ * Also it is possible to add new {@link RemoteConnection}s pointing to your specified REST endpoint.
+ */
 
 public class BleTracker {
 
@@ -144,11 +150,11 @@ public class BleTracker {
      * Creates a background service which operates in the background and gets called from time to time by the system
      * This causes low battery drain but also the refresh rate is low
      * Also this will NOT! send to CISPA because of too low accuracy
-     * @throws OtherServiceStillRunningException if an old service is still running. Stop old service first before creating a new one
+     * @throws BleOtherServiceStillRunningException if an old service is still running. Stop old service first before creating a new one
      */
-    public void createBackgroundService() throws OtherServiceStillRunningException {
+    public void createBackgroundService() throws BleOtherServiceStillRunningException {
         if (isRunning()) {
-            throw new OtherServiceStillRunningException();
+            throw new BleOtherServiceStillRunningException();
         }
         // CISPA connection get's reinitialized with send mode false set in preferences.
         preferences.setSendToCispa(false);
@@ -162,11 +168,11 @@ public class BleTracker {
      * This causes huge battery drain but also gives a very good refresh rate
      * @param foregroundNotification this is needed because we need to display a permanent notification if tracking should run as foreground service
      *                               You can use ForegroundNotification.parse() for this type of notification
-     * @throws OtherServiceStillRunningException if an old service is still running. Stop old service first before creating a new one
+     * @throws BleOtherServiceStillRunningException if an old service is still running. Stop old service first before creating a new one
      */
-    public void createForegroundService(Notification foregroundNotification) throws OtherServiceStillRunningException {
+    public void createForegroundService(Notification foregroundNotification) throws BleOtherServiceStillRunningException {
         if (isRunning()) {
-            throw new OtherServiceStillRunningException();
+            throw new BleOtherServiceStillRunningException();
         }
         service.createForegroundService(beaconNotifiers, foregroundNotification, cispaConnection);
     }

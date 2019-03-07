@@ -9,6 +9,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import androidx.appcompat.app.AlertDialog;
 import saarland.cispa.bletrackerlib.R;
 
+/**
+ * Helper class to easy ensure that Bluetooth is on. If not ask user.
+ */
+
 public class BluetoothHelper extends BaseHelper {
 
     /**

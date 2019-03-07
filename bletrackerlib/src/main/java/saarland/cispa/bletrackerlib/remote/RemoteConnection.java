@@ -30,6 +30,13 @@ import javax.net.ssl.TrustManagerFactory;
 import saarland.cispa.bletrackerlib.data.SimpleBeacon;
 import saarland.cispa.bletrackerlib.parser.DateParser;
 
+/**
+ * Here the interaction with the rest service(s) is done.
+ * For each service you add to BleTracker sending and receiving is done based on the
+ * {@link saarland.cispa.bletrackerlib.remote.RemotePreferences}
+ * if you specified some own or the default will be used.
+ */
+
 public class RemoteConnection {
 
     private String url;

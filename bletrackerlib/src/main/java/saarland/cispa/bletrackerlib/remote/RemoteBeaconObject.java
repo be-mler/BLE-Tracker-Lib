@@ -1,7 +1,18 @@
 package saarland.cispa.bletrackerlib.remote;
 
+import java.util.ArrayList;
+
 import saarland.cispa.bletrackerlib.data.SimpleBeacon;
 import saarland.cispa.bletrackerlib.data.SimpleBeaconLayouts;
+
+/**
+ * Class needed for sending data to the REST service.
+ * Your endpoint must be able to parse this class encoded as JSON
+ *
+ * @see RemoteConnection#send(SimpleBeacon) how sending works in detail
+ * @see RemoteConnection#request(double, double, double, double, ArrayList) how requesting works in detail
+ *
+ */
 
 public class RemoteBeaconObject {
 

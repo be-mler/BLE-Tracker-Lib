@@ -12,6 +12,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import androidx.appcompat.app.AlertDialog;
 import saarland.cispa.bletrackerlib.R;
 
+/**
+ * Helper class to easy ensure that Location is on. If not ask user.
+ */
+
 public class LocationHelper extends BaseHelper {
     /**
      * Open a dialog and explain the user to turn on GPS and Network location

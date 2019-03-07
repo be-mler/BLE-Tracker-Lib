@@ -9,6 +9,10 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
+/**
+ * Used for Date and Time parsing in {@link SimpleBeaconParser}
+ */
+
 public class DateParser {
 
     private static final String DATEFORMAT_DISPLAY = "yyyy-MM-dd HH:mm:ss";

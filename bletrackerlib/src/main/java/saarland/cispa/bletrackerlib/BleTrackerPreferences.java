@@ -4,7 +4,11 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
-import saarland.cispa.bletrackerlib.remote.SendMode;
+/**
+ * Within this class you can specify your preferences how the lib should work.
+ * Be aware that lib will stop sending to CISPA if your data quality is too bad.
+ * the affecting params are location freshness and location accuracy
+ */
 
 public class BleTrackerPreferences {
     private static final int CISAP_LOCATION_FRESHNESS_MINIMUM = 1000 * 10;

@@ -2,6 +2,10 @@ package saarland.cispa.bletrackerlib.remote;
 
 import java.security.KeyStore;
 
+/**
+ * Settings for every {@link RemoteConnection}
+ */
+
 public class RemotePreferences {
 
     private SendMode sendMode = SendMode.DO_ONLY_SEND_IF_BEACONS_HAVE_GPS;

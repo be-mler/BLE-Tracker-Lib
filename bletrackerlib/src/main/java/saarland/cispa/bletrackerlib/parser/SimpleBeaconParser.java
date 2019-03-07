@@ -15,9 +15,15 @@ import saarland.cispa.bletrackerlib.BleTracker;
 import saarland.cispa.bletrackerlib.BleTrackerPreferences;
 import saarland.cispa.bletrackerlib.data.SimpleBeacon;
 import saarland.cispa.bletrackerlib.data.SimpleBeaconLayouts;
-import saarland.cispa.bletrackerlib.exceptions.ParseException;
+import saarland.cispa.bletrackerlib.exceptions.BleParseException;
 
 import static androidx.core.content.ContextCompat.checkSelfPermission;
+
+/**
+ * Here the AltBeacon information is parsed accordingly into the specific beacon formats
+ * and stored as an SimpleBeacon. If location is turned on and matches the accuracy and
+ * freshness specified in the BleTrackerPreferences location information is added to the SimpleBeacon.
+ */
 
 public class SimpleBeaconParser implements LocationListener {
 
@@ -39,9 +45,9 @@ public class SimpleBeaconParser implements LocationListener {
      *
      * @param beacon the beacon from altbeacon lib
      * @return SimpleBeacon
-     * @throws ParseException if something went wrong while parsing
+     * @throws BleParseException if something went wrong while parsing
      */
-    public SimpleBeacon parse(Beacon beacon) throws ParseException {
+    public SimpleBeacon parse(Beacon beacon) throws BleParseException {
         try {
             SimpleBeacon simpleBeacon = new SimpleBeacon("", beacon.getRssi(), beacon.getTxPower(),
                     beacon.getManufacturer(), beacon.getBluetoothAddress(), beacon.getBluetoothName(),
@@ -96,7 +102,7 @@ public class SimpleBeaconParser implements LocationListener {
             return simpleBeacon;
 
         } catch (Exception e) {
-            throw new ParseException(e.getCause());
+            throw new BleParseException(e.getCause());
         }
     }
 

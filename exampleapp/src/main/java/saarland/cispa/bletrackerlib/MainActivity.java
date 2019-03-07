@@ -2,7 +2,7 @@ package saarland.cispa.bletrackerlib;
 
 import androidx.appcompat.app.AppCompatActivity;
 import saarland.cispa.bletrackerlib.data.SimpleBeacon;
-import saarland.cispa.bletrackerlib.exceptions.OtherServiceStillRunningException;
+import saarland.cispa.bletrackerlib.exceptions.BleOtherServiceStillRunningException;
 import saarland.cispa.bletrackerlib.helper.ForegroundNotification;
 import saarland.cispa.bletrackerlib.remote.RemoteConnection;
 import saarland.cispa.bletrackerlib.remote.RemotePreferences;
@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
 
             try {
                 bleTracker.createForegroundService(notification);
-            } catch (OtherServiceStillRunningException e) {
+            } catch (BleOtherServiceStillRunningException e) {
                 Toast.makeText(this, "service already exists", Toast.LENGTH_SHORT).show();
             }
         }

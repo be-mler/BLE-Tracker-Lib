@@ -8,6 +8,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 
+/**
+ * Helper to create a permanent  foreground notification which is needed for the foreground service
+ */
 public class ForegroundNotification {
 
     public static final String NOTIFICATION_FOREGROUND_CHANNEL_ID = "NOTIFICATION_FOREGROUND_CHANNEL_ID";

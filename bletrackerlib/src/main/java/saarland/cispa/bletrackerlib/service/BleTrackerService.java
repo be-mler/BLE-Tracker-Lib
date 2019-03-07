@@ -16,6 +16,16 @@ import java.util.ArrayList;
 import saarland.cispa.bletrackerlib.BleTracker;
 import saarland.cispa.bletrackerlib.remote.RemoteConnection;
 
+/**
+ * This is the heart of the Lib here the AltBeacon scanner service is created and invoked.
+ * This class has to be the application context yor app and must be specified in the android manifest!!
+ * There the callback is fired if a beacon is near.
+ * For getting the beacon information a {@link RangeNotifierImpl} gets created for both,
+ * the background scanner and the foreground scanner in the specific methods
+ * {@link BleTrackerService#createBackgroundService(ArrayList, RemoteConnection)} and
+ * {@link BleTrackerService#createForegroundService(ArrayList, Notification, RemoteConnection)}.
+ */
+
 public final class BleTrackerService extends Application implements BootstrapNotifier {
 
     private static final String TAG = "BleTrackerService";

@@ -5,6 +5,10 @@ import org.altbeacon.beacon.BeaconParser;
 
 import saarland.cispa.bletrackerlib.data.SimpleBeaconLayouts;
 
+/**
+ * A small manager for setting the beacon layouts for the used {@link org.altbeacon.beacon.BeaconManager}
+ */
+
 public class LayoutManager {
 
     public static void setAllLayouts(BeaconManager beaconManager) {

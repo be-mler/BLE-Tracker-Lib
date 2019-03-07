@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 
 /**
  * Created by bridou_n on 10/09/2017.
+ * Used for parsing Base64 encoded data in {@link RuuviParser}
  */
 
 public class Base64 {

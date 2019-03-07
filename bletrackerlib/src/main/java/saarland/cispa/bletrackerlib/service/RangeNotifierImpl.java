@@ -12,9 +12,15 @@ import java.util.Collection;
 import java.util.List;
 
 import saarland.cispa.bletrackerlib.data.SimpleBeacon;
-import saarland.cispa.bletrackerlib.exceptions.ParseException;
+import saarland.cispa.bletrackerlib.exceptions.BleParseException;
 import saarland.cispa.bletrackerlib.parser.SimpleBeaconParser;
 import saarland.cispa.bletrackerlib.remote.RemoteConnection;
+
+/**
+ * This class receives and parses the beacon information and fires the
+ * {@link BeaconNotifier#onUpdate(ArrayList<SimpleBeacon>)} callback with
+ * the parsed beacons. Furthermore it starts sending all beacons to all registered endpoints.
+ */
 
 public class RangeNotifierImpl implements RangeNotifier {
 
@@ -53,7 +59,7 @@ public class RangeNotifierImpl implements RangeNotifier {
             try {
                 SimpleBeacon simpleBeacon = parser.parse(beacon);
                 simpleBeacons.add(simpleBeacon);
-            } catch (ParseException e) {
+            } catch (BleParseException e) {
                 Log.e(TAG, e.getMessage(), e);
             }
         }

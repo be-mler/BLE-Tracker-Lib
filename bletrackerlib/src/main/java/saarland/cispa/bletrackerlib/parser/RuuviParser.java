@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 
 /**
  * Created by bridou_n on 05/09/2017.
+ * Parsing Ruuvi Tags data
  */
 
 public class RuuviParser {

@@ -6,6 +6,9 @@ import android.content.DialogInterface;
 import androidx.appcompat.app.AlertDialog;
 import saarland.cispa.bletrackerlib.R;
 
+/**
+ * Basic helper class for showing dialogs that app needs something to work corrects
+ */
 public class BaseHelper {
 
     /**

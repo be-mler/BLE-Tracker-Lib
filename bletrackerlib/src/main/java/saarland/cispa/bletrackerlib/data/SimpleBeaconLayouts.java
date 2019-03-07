@@ -2,6 +2,10 @@ package saarland.cispa.bletrackerlib.data;
 
 import org.altbeacon.beacon.BeaconParser;
 
+/**
+ * The beacon specific layouts we want to recognize
+ */
+
 public enum SimpleBeaconLayouts {
     EDDYSTONE_UID_LAYOUT(BeaconParser.EDDYSTONE_UID_LAYOUT),
     EDDYSTONE_TLM_LAYOUT(BeaconParser.EDDYSTONE_TLM_LAYOUT),

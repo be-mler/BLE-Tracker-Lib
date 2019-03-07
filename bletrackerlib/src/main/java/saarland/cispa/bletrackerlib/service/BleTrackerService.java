@@ -49,6 +49,14 @@ public final class BleTrackerService extends Application implements BootstrapNot
 
         //backgroundPowerSaver = new BackgroundPowerSaver(this);
 
+        //TODO: remove debug code before release
+        //TimedBeaconSimulator simulator = new TimedBeaconSimulator();
+        //simulator.USE_SIMULATED_BEACONS = true;
+        //BeaconManager.setBeaconSimulator(simulator);
+        //simulator = ((TimedBeaconSimulator) BeaconManager.getBeaconSimulator());
+        //simulator.createTimedSimulatedBeacons();
+        //beaconManager.setDebug(true);
+
         beaconManager.addRangeNotifier(rangeNotifier);
 
         // Set the Layout of the beacons to which are we listening to
@@ -77,13 +85,12 @@ public final class BleTrackerService extends Application implements BootstrapNot
         backgroundPowerSaver = null;
 
         //TODO: remove debug code before release
-        TimedBeaconSimulator simulator = new TimedBeaconSimulator();
-        simulator.USE_SIMULATED_BEACONS = true;
-        BeaconManager.setBeaconSimulator(simulator);
-        simulator = ((TimedBeaconSimulator) BeaconManager.getBeaconSimulator());
-        simulator.createTimedSimulatedBeacons();
-        beaconManager.setDebug(true);
-
+        //TimedBeaconSimulator simulator = new TimedBeaconSimulator();
+        //simulator.USE_SIMULATED_BEACONS = true;
+        //BeaconManager.setBeaconSimulator(simulator);
+        //simulator = ((TimedBeaconSimulator) BeaconManager.getBeaconSimulator());
+        //simulator.createTimedSimulatedBeacons();
+        //beaconManager.setDebug(true);
 
         beaconManager.addRangeNotifier(rangeNotifier);
 
